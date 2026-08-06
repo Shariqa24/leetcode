@@ -1,29 +1,21 @@
 class Solution:
     def change(self, amount: int, coins: List[int]) -> int:
-        n=len(coins)
-        memo=[[-1]*(amount+1) for _ in range (n+1)]
+        n = len(coins)
 
-        def solve(i,ts):
-            if(ts==0):
-                return 1
-            if (i==n):
-                return 0
+        dp = [[0] * (amount + 1) for _ in range(n + 1)]
 
-            if memo[i][ts]!=-1:
-                return memo[i][ts]  
+        for i in range(n + 1):
+            dp[i][0] = 1
 
-            take=0
+        for i in range(n - 1, -1, -1):
+            for j in range(1, amount + 1):
 
-            if coins[i]<=ts:
-                take=solve(i,ts-coins[i])   
+                take = 0
+                if coins[i] <= j:
+                    take = dp[i][j - coins[i]]
 
-            nott=solve(i+1,ts)
+                nott = dp[i + 1][j]
 
-            memo[i][ts]= nott+take
-            return memo[i][ts]
+                dp[i][j] = take + nott
 
-        return solve(0,amount)    
-
-                
-
-        
+        return dp[0][amount]

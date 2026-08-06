@@ -1,7 +1,7 @@
 class Solution:
     def change(self, amount: int, coins: List[int]) -> int:
         n=len(coins)
-        memo={}
+        memo=[[-1]*(amount+1) for _ in range (n+1)]
 
         def solve(i,ts):
             if(ts==0):
@@ -9,8 +9,8 @@ class Solution:
             if (i==n):
                 return 0
 
-            if (i,ts) in memo:
-                return memo [(i,ts)]    
+            if memo[i][ts]!=-1:
+                return memo[i][ts]  
 
             take=0
 
@@ -19,8 +19,8 @@ class Solution:
 
             nott=solve(i+1,ts)
 
-            memo[(i,ts)]= nott+take
-            return memo[(i,ts)]
+            memo[i][ts]= nott+take
+            return memo[i][ts]
 
         return solve(0,amount)    
 

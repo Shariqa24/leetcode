@@ -1,31 +1,31 @@
 
+from collections import deque
+
 class Solution:
     def canFinish(self, numCourses: int, prerequisites: list[list[int]]) -> bool:
         graph = [[] for i in range(numCourses)]
+        indegree = [0] * numCourses
 
         for u, v in prerequisites:
             graph[u].append(v)
+            indegree[v] += 1
 
-        visit = [0] * numCourses
-
-        def dfs(idx):
-            if visit[idx] == 1:
-                return False
-
-            if visit[idx] == 2:
-                return True
-
-            visit[idx] = 1
-
-            for ngh in graph[idx]:
-                if not dfs(ngh):
-                    return False
-
-            visit[idx] = 2
-            return True
+        q = deque()
 
         for i in range(numCourses):
-            if not dfs(i):
-                return False
+            if indegree[i] == 0:
+                q.append(i)
 
-        return True
+        count = 0
+
+        while q:
+            node = q.popleft()
+            count += 1
+
+            for ngh in graph[node]:
+                indegree[ngh] -= 1
+
+                if indegree[ngh] == 0:
+                    q.append(ngh)
+
+        return count == numCourses
